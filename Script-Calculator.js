@@ -1,10 +1,13 @@
 /*
 Author: Sunny Patel 3/26
+Modified: Jenn Alarcon 3/26
+  Chaged Expression inttial value
 */
+
 var Calculator = function() {
 	this.display = document.getElementById("display").display;
 	this.buttons = document.getElementById("mainbuttons")
-	this.expressionValue = 0;
+	this.expressionValue = "";
 	/*
 	Author: Sunny Patel 3/26
 	Replaces the textfield in the display with input str.
@@ -28,12 +31,13 @@ var Calculator = function() {
 	Author: Sunny Patel 3/26
 	Updates the expression value based off the input digit
 	this.expressionValue = #this.expresssionValue*10 + digit
+
+  Modified: Jenn Alarcon 3/26
+  Wasn't adding digits right when multiplying by ten. -Minor Change, to just add digit to end of string
     */
 	this.updateExpressionValue = function(digit) {
-    	this.expressionValue *= 10;
 		this.expressionValue += digit;
     }
-
 
 };
 
@@ -47,37 +51,49 @@ var addListeners = function(calc) {
 	*/
 	var equals = calc.buttons.equal;
 	var equalsFunc = function() {
+    calc.expressionValue = eval(calc.expressionValue);
 		calc.updateDisplay(calc.expressionValue);
 	}
    	equals.addEventListener("click", equalsFunc, false);
-   	/*add event listener for CLEAR button
+
+
+   	/*
+    add event listener for CLEAR button
    	*/
    	var clear = calc.buttons.clear;
    	var clearFunc = function() {
    		calc.clear();
    	}
    	clear.addEventListener("click", clearFunc, false);
+
+
    	/*
    	add event listener for each NUMBER button
    	*/
+    var numberFunc = function() {
+         //window.alert("You pressed: "+this.value);
+    	    calc.updateExpressionValue(this.value);
+	        calc.updateDisplay(calc.expressionValue);
+   	}
    	// retrieve all the elements with the name numbers. This is
    	// expected to be all the form elements that are numbers.
-   	var funcs = [];
-   	var numberFunc = function(i) {
-   		return function() {
-   			calc.updateExpressionValue(i);
-   			calc.updateDisplay(calc.expressionValue);
-   		}
+    for (var i=0; i < calc.buttons.numbers.length; i++) {
+   		var element = calc.buttons.numbers[i];
+   		element.addEventListener("click", numberFunc, false);
    	}
-   	// create 10 functions that print display the values 0-9 to display
-   	for (var i=0; i < calc.buttons.numbers.length; i++) {
-   		funcs[i] = numberFunc(i);
+
+    /*
+    add event listener for each OPS button
+    */
+    var opsFunc = function(){
+        calc.expressionValue += this.value;
+        calc.updateDisplay(calc.expressionValue);
+    }
+    for (var i=0; i < calc.buttons.ops.length; i++) {
+   		var element = calc.buttons.ops[i];
+   		element.addEventListener("click", opsFunc, false);
    	}
-   	// assign those 10 functions to appropriate buttons
-   	for (var j=0; j < calc.buttons.numbers.length; j++) {
-   		var element = calc.buttons.numbers[j];
-   		element.addEventListener("click", funcs[element.value], false);
-   	}
+
 }
 var calc = new Calculator();
 addListeners(calc);
