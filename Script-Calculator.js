@@ -23,32 +23,31 @@ var Calculator = function() {
 		this.expressionValue += digit;
     }
 
-    /*
-	Author: Sunny Patel 3/26
-    */
-    this.addListeners = function() {
-    	// add event listener for equals button
-    	var equals = this.buttons.equal;
-		var equalsFunc = function() {
-			this.updateDisplay(this.expressionValue);
-		}
-    	equals.addEventListener("click", equalsFunc, false);
-    	// add event listener for each number button
-    	var numberFunc = function() {
-    		this.updateExpressionValue(element.value);
-    		this.updateDisplay(this.expressionValue);
-    	}
-    	// retrieve all the elements with the name numbers. This is
-    	// expected to be all the form elements that are numbers.
-    	
-    	var numbers = document.getElementsByName("numbers");
-    	for (var i=0; i < this.buttons.numbers.length; i++) {
-      		element = this.buttons.numbers[i];
-    		element.addEventListener("click", numberFunc, false);
-    	}
-    	
-    }
+
 };
 
+/*
+Author: Sunny Patel 3/26
+Adds event listeners to calc's buttons.
+*/
+var addListeners = function(calc) {
+	// add event listener for equals button
+	var equals = calc.buttons.equal;
+	var equalsFunc = function() {
+		calc.updateDisplay(calc.expressionValue);
+	}
+   	equals.addEventListener("click", equalsFunc, false);
+   	// add event listener for each number button
+   	// retrieve all the elements with the name numbers. This is
+   	// expected to be all the form elements that are numbers.
+   	for (var i=0; i < calc.buttons.numbers.length; i++) {
+   		var element = calc.buttons.numbers[i];
+		var numberFunc = function() {
+    	    calc.updateExpressionValue(element.value);
+	        calc.updateDisplay(calc.expressionValue);
+   		}
+   		element.addEventListener("click", numberFunc, false);
+   	}
+}
 var calc = new Calculator();
 calc.addListeners();
