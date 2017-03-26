@@ -20,11 +20,11 @@ var Calculator = function() {
 	Author: Sunny Patel 3/26
 	Clears the display and reset the expressionValue
 	this.display.value = "";
-	this.expressionValue = 0;
+	this.expressionValue = "";
     */
     this.clear = function() {
     	this.updateDisplay("");
-    	this.expressionValue = 0;
+    	this.expressionValue = "";
     }
 
     /*
