@@ -24,9 +24,6 @@ var Calculator = function() {
     }
 
     /*
-    ERROR: => TypeError: this.updateDisplay is not a function
-    I guess it's not in the scope, but I can't figure out how to fix that.
-    
 	Author: Sunny Patel 3/26
     */
     this.addListeners = function() {
