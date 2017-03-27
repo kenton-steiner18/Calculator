@@ -97,8 +97,26 @@ var addListeners = function(calc) {
     	add event listener for each OPS button
     	*/
     	var opsFunc = function(){
-        	calc.expressionValue += this.value;
-        	calc.updateDisplay(calc.expressionValue);
+		var check = true;
+		// check whether there is just one OPS between two numbers, overwrite the first OPS
+		var ops = ["+", "-", "*", "/"];
+		for (var i =0; i < ops.length && check; i++){
+			if(calc.expressionValue.charAt(calc.expressionValue.length - 1) === ops[i]){
+				calc.expressionValue = calc.expressionValue.replace(ops[i], this.value);
+				calc.updateDisplay(calc.expressionValue);
+				check = false;		
+			}
+		}
+		// at the beginning, the OPS just can be "-",
+		if(calc.expressionValue.length == 0 && this.value !== "-"){
+			check = false;
+		}
+
+		if(check){
+			calc.expressionValue += this.value;
+        		calc.updateDisplay(calc.expressionValue);
+		}
+
     	}
     	for (var i=0; i < calc.buttons.ops.length; i++) {
    		var element = calc.buttons.ops[i];
