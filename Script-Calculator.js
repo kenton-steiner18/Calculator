@@ -49,14 +49,19 @@ var addListeners = function(calc) {
 	/*
 	add event listener for . button
 	*/
+	var checkDot = true;
 	var dot = calc.buttons.dot;
 	var dotFunc = function() {
-		calc.expressionValue += this.value;
-		calc.updateDisplay(calc.expressionValue);
+		if (checkDot){
+			calc.expressionValue += this.value;
+			calc.updateDisplay(calc.expressionValue);
+			checkDot = false;
+		}
 	}
 
 	dot.addEventListener("click", dotFunc, false);
 
+	
 	/*
 	add event listener for = button
 	*/
@@ -71,9 +76,12 @@ var addListeners = function(calc) {
    	/*
     add event listener for CLEAR button
    	*/
+	// prevent there are more than one dots for one number
    	var clear = calc.buttons.clear;
+
    	var clearFunc = function() {
    		calc.clear();
+		checkDot = true;
    	}
    	clear.addEventListener("click", clearFunc, false);
 
@@ -97,22 +105,26 @@ var addListeners = function(calc) {
     	add event listener for each OPS button
     	*/
     	var opsFunc = function(){
-		var check = true;
+
 		// check whether there is just one OPS between two numbers, overwrite the first OPS
+		var check = true;
+
 		var ops = ["+", "-", "*", "/"];
 		for (var i =0; i < ops.length && check; i++){
 			if(calc.expressionValue.length > 0 && calc.expressionValue.charAt(calc.expressionValue.length - 1) == ops[i]){
 				calc.expressionValue = calc.expressionValue.substring(0, calc.expressionValue.length - 1);	
 			}
 		}
+
 		// at the beginning, the OPS just can be "-",
 		if(calc.expressionValue.length == 0 && this.value != "-"){
 			check = false;
 		}
 
-		if(check){
+		if (check){
 			calc.expressionValue += this.value;
         		calc.updateDisplay(calc.expressionValue);
+			checkDot = true;
 		}
 
     	}
