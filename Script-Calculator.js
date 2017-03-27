@@ -32,11 +32,11 @@ var Calculator = function() {
 	Updates the expression value based off the input digit
 	this.expressionValue = #this.expresssionValue*10 + digit
 
-  Modified: Jenn Alarcon 3/26
-  Wasn't adding digits right when multiplying by ten. -Minor Change, to just add digit to end of string
+  	Modified: Jenn Alarcon 3/26
+  	Wasn't adding digits right when multiplying by ten. -Minor Change, to just add digit to end of string
     */
 	this.updateExpressionValue = function(digit) {
-		this.expressionValue += digit;
+	this.expressionValue += digit;
     }
 
 };
@@ -52,8 +52,9 @@ var addListeners = function(calc) {
 	var dot = calc.buttons.dot;
 	var dotFunc = function() {
 		calc.expressionValue += this.value;
-		calc.updateDisplay(clac.expressionValue);
+		calc.updateDisplay(calc.expressionValue);
 	}
+
 	dot.addEventListener("click", dotFunc, false);
 
 	/*
