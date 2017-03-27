@@ -101,14 +101,12 @@ var addListeners = function(calc) {
 		// check whether there is just one OPS between two numbers, overwrite the first OPS
 		var ops = ["+", "-", "*", "/"];
 		for (var i =0; i < ops.length && check; i++){
-			if(calc.expressionValue.charAt(calc.expressionValue.length - 1) === ops[i]){
-				calc.expressionValue = calc.expressionValue.replace(ops[i], this.value);
-				calc.updateDisplay(calc.expressionValue);
-				check = false;		
+			if(calc.expressionValue.length > 0 && calc.expressionValue.charAt(calc.expressionValue.length - 1) == ops[i]){
+				calc.expressionValue = calc.expressionValue.substring(0, calc.expressionValue.length - 1);	
 			}
 		}
 		// at the beginning, the OPS just can be "-",
-		if(calc.expressionValue.length == 0 && this.value !== "-"){
+		if(calc.expressionValue.length == 0 && this.value != "-"){
 			check = false;
 		}
 
