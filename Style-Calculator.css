@@ -13,18 +13,22 @@ body{
 	background-color: rgba(192, 192, 192, 0.8);
 	width: 250px;
 	border: 1px solid #333;
-	margin: 0;
-	position: absolute;
+	margin: auto;
+	margin: 30%;
 	/*Maybe we should try to center it?*/
 
 }
 
 
 #mainbuttons  p input{
-	font-size: 9em;
-	}
+	font-size: 1em;
+	width: 2.5em;
+}
 
 #display input{
-	width:  10em;
-
+	width:  11em;
+}
+/*Greater specificity than those for the common buttons*/
+#mainbuttons #clear {
+	width: 6em;
 }
