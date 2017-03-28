@@ -1,34 +1,43 @@
 /*Jenn Alarcon - Created 3.26 (Just started with basic coloring, and center*/
 body{
-	background-color: #73818e;
+	background-image: url("ep_naturalblack.png");
 }
 
 #display  {
-	padding-top: 10px;	
+	margin-top: .5em;
+	padding-top: .5em;
 
 }
 
 .container {
 	text-align: center;
-	background-color: rgba(192, 192, 192, 0.8);
-	width: 250px;
-	border: 1px solid #333;
+	background-color: #907f9b;
+	width: 22em;
+	border: 1px solid;
+	border-radius: 5%;
 	margin: auto;
-	margin: 30%;
 	/*Maybe we should try to center it?*/
 
 }
 
 
 #mainbuttons  p input{
-	font-size: 1em;
+	font-size: 1.5em;
 	width: 2.5em;
+	background-color: #EDD1FF;
+	box-shadow: 1px 1px 2px 1px #67427F;
 }
-
+#mainbuttons p {
+	margin-top: .5em;
+	margin-bottom: 0;
+}
 #display input{
-	width:  11em;
+	width:  16em;
+	margin: 0;
+	height: 4em;
 }
 /*Greater specificity than those for the common buttons*/
 #mainbuttons #clear {
 	width: 6em;
+	margin-bottom: .5em;
 }
