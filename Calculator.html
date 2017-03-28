@@ -6,7 +6,6 @@
 
     <title> BITS PLEASE CALCULATOR </title>
     <link rel="stylesheet" type="text/css" href="Style-Calculator.css">
-
 </head>
 
 <body>
@@ -14,42 +13,41 @@
 <div class="container">
     <!--DISPLAY RESULTS WHEN PRESSING BUTTON-->
     <form id="display">
+        <input type="text" name="memory" value="">
         <input type="text" name="display" value="">
     </form>
 
     <!--DISPLAY ALL THE POSSIBLE KEYS-->
     <form id="mainbuttons">
-        <p> <input type="button" name="numbers" value="7"> </input>
-            <input type="button" name="numbers" value="8"> </input>
-            <input type="button" name="numbers" value="9"> </input>
-            <input type="button" name="ops" value="/";> </input>
+        <p> <input type="button" name="numbers" value="7"/>
+            <input type="button" name="numbers" value="8"/>
+            <input type="button" name="numbers" value="9"/>
+            <input type="button" name="ops" value="/"/>
         </p>
 
-        <p> <input type="button" name="numbers" value="4"> </input>
-            <input type="button" name="numbers" value="5"> </input>
-            <input type="button" name="numbers" value="6"> </input>
-            <input type="button" name="ops" value="*";> </input>
+        <p> <input type="button" name="numbers" value="4"/>
+            <input type="button" name="numbers" value="5"/>
+            <input type="button" name="numbers" value="6"/>
+            <input type="button" name="ops" value="*">
         </p>
 
-        <p> <input type="button" name="numbers" value="1"> </input>
-            <input type="button" name="numbers" value="2"> </input>
-            <input type="button" name="numbers" value="3"> </input>
-            <input type="button" name="ops" value="-";> </input>
+        <p> <input type="button" name="numbers" value="1"/>
+            <input type="button" name="numbers" value="2"/>
+            <input type="button" name="numbers" value="3"/>
+            <input type="button" name="ops" value="-"/>
         </p>
 
-        <p> <input type="button" name="numbers" value="0"> </input>
-            <input type="button" name="dot" value="."> </input>
-            <input type="button" name="equal" value="="> </input>
-            <input type="button" name="ops" value="+"> </input>
+        <p> <input type="button" name="numbers" value="0"/>
+            <input type="button" name="dot" value="."/>
+            <input type="button" name="equal" value="="/>
+            <input type="button" name="ops" value="+"/> 
         </p>
 
-        <p> <input id="clear" type="button" name="clear" value="CLEAR"></input>
+        <p> <input id="clear" type="button" name="clear" value="CLEAR"/>
         </p>
     </form><!--KEYS-->
 
 </div>
+<script src="Script-Calculator.js"></script>
 </body>
-
-
-  <script src="Script-Calculator.js"></script>
 </html>
