@@ -6,8 +6,21 @@ Chaged Expression inttial value
 
 var Calculator = function() {
 	this.display = document.getElementById("display").display;
+
+	this.memory = document.getElementById("display").memory;
+
 	this.buttons = document.getElementById("mainbuttons")
-	this.expressionValue = "";
+
+	this.displayValue = "";
+	this.currentNumber = "";
+	this.ops = [];
+	this.numbers =[];
+	this.evalExpression = 0;
+	this.lastOpEquals = false;
+
+
+
+
 	/*
 	Author: Sunny Patel 3/26
 	Replaces the textfield in the display with input str.
@@ -17,26 +30,81 @@ var Calculator = function() {
 	}
 
 	/*
-	Author: Sunny Patel 3/26
-	Clears the display and reset the expressionValue
-	this.display.value = "";
-	this.expressionValue = "";
+	Author: Jenn Alarcon 3/28
+	Replaces the textfield in the memory field with input str.
 	*/
+	this.updateMemory = function(str) {
+		this.memory.value = str;
+	}
+
+
+	/*
+	Author: Sunny Patel & Jenn Alarcon 3/26
+	Clears the display and reset the displayValue
+	this.display.value = "";
+	this.displayValue = "";
+	this.display.memory = "";
+
+	*/
+
 	this.clear = function() {
 		this.updateDisplay("");
-		this.expressionValue = "";
+		this.updateMemory("");
+
+		this.displayValue = "";
+		this.evalExpression = "";
+		this.currentNumber = "";
+
+		this.ops = [];
+		this.numbers =[];
+
+		this.lastOpEquals = false;
+
+
 	}
 
 	/*
 	Author: Sunny Patel 3/26
 	Updates the expression value based off the input digit
-	this.expressionValue = #this.expresssionValue*10 + digit
+	this.displayValue = #this.expresssionValue*10 + digit
 
 	Modified: Jenn Alarcon 3/26
 	Wasn't adding digits right when multiplying by ten. -Minor Change, to just add digit to end of string
+
+	Modified: Jenn Alarcon 3/28
+	Added the current number field
 	*/
-	this.updateExpressionValue = function(digit) {
-		this.expressionValue += digit;
+	this.updatedisplayValue = function(digit) {
+		this.displayValue += digit;
+		this.currentNumber += digit;
+	}
+
+	/*
+	Author: Jenn Alarcon 3/28
+	Evaulate expression
+	*/
+
+	this.evaluateExpression = function(){
+
+		var op = this.ops.pop();
+
+		var num2 = parseInt(this.numbers.shift());
+		var num1 = parseInt(this.numbers.shift());
+
+		if(op == "+"){
+			this.evalExpression = num1 + num2;
+		}else if(op == "*"){
+			this.evalExpression = num1 * num2;
+		}else if(op == "/"){
+			this.evalExpression = num1 / num2;
+		}else if(op == "-"){
+			this.evalExpression = num1 - num2;
+		}
+
+		this.displayValue = this.evalExpression;
+		//add new value to memory (i.e. the number stack)
+		this.numbers.unshift(this.evalExpression);
+		this.evalExpression = 0;
 	}
 
 };
@@ -53,8 +121,8 @@ var addListeners = function(calc) {
 	var dot = calc.buttons.dot;
 	var dotFunc = function() {
 		if (checkDot){
-			calc.expressionValue += this.value;
-			calc.updateDisplay(calc.expressionValue);
+			calc.displayValue += this.value;
+			calc.updateDisplay(calc.displayValue);
 			checkDot = false;
 		}
 	}
@@ -67,8 +135,21 @@ var addListeners = function(calc) {
 	*/
 	var equals = calc.buttons.equal;
 	var equalsFunc = function() {
-		calc.expressionValue = eval(calc.expressionValue);
-		calc.updateDisplay(calc.expressionValue);
+		//add to numbers stack
+		calc.numbers.unshift(calc.currentNumber);
+		calc.displayValue += " ";
+
+		if(calc.numbers.length == 2){
+			//window.alert(calc.ops.length);
+			calc.evaluateExpression();
+			//user need to enter a number
+			calc.displayValue += " ";
+
+		}
+		calc.updateMemory("");
+		calc.updateDisplay(calc.displayValue);
+		calc.lastOpEquals = true;
+
 	}
 	equals.addEventListener("click", equalsFunc, false);
 
@@ -91,8 +172,8 @@ var addListeners = function(calc) {
 	*/
 	var numberFunc = function() {
 		//window.alert("You pressed: "+this.value);
-		calc.updateExpressionValue(this.value);
-		calc.updateDisplay(calc.expressionValue);
+		calc.updatedisplayValue(this.value);
+		calc.updateDisplay(calc.displayValue);
 	}
 	// retrieve all the elements with the name numbers. This is
 	// expected to be all the form elements that are numbers.
@@ -111,29 +192,62 @@ var addListeners = function(calc) {
 
 		var ops = ["+", "-", "*", "/"];
 		for (var i =0; i < ops.length && check; i++){
-			if(calc.expressionValue.length > 0 && calc.expressionValue.charAt(calc.expressionValue.length - 1) == ops[i]){
-				calc.expressionValue = calc.expressionValue.substring(0, calc.expressionValue.length - 1);
+			if(calc.displayValue.length > 0 && calc.displayValue.charAt(calc.displayValue.length - 1) == ops[i]){
+				calc.displayValue = calc.displayValue.substring(0, calc.displayValue.length - 1);
 			}
 		}
 
 		// at the beginning, the OPS just can be "-",
-		if(calc.expressionValue.length == 0 && this.value != "-"){
+		if(calc.displayValue.length == 0 && this.value != "-"){
 			check = false;
 		}
 
+
+		//***Author: Jenn ****
+		//***UPDATE DISPLAY****/
 		if (check){
-			calc.expressionValue += this.value;
-			calc.updateDisplay(calc.expressionValue);
+
+
+			//add to numbers stack
+			calc.numbers.unshift(calc.currentNumber);
+			//clear current number
+			calc.currentNumber ="";
+			//add space after to display space betweeen current and next num
+			calc.displayValue += " ";
+
+			//push op onto the stack
+			calc.ops.unshift(this.value);
+
+			//if there is two values on the stack
+			if(calc.numbers.length == 2){
+				//window.alert(calc.ops.length);
+				calc.evaluateExpression();
+				//user need to enter a number
+				calc.displayValue += " ";
+
+			}
+			//update memory with the op chosen next
+			calc.updateMemory(this.value);
+			calc.updateDisplay(calc.displayValue);
 			checkDot = true;
 		}
 
-	}
+	} //END OF OPS FUNCTION
+
+
 	for (var i=0; i < calc.buttons.ops.length; i++) {
 		var element = calc.buttons.ops[i];
 		element.addEventListener("click", opsFunc, false);
 	}
+	//***Author: Jenn ****
+
 
 
 }
+
+
+
+
+
 var calc = new Calculator();
 addListeners(calc);
