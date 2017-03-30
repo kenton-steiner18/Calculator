@@ -38,7 +38,6 @@ var Calculator = function() {
 		this.memory.value = str;
 	}
 
-
 	/*
 	Author: Sunny Patel & Jenn Alarcon 3/26
 	Clears the displays and reset the currentInput
@@ -69,16 +68,13 @@ var Calculator = function() {
 		this.currentInput += digit;
 	}
 
-
 	/*
 	Author: Jenn Alarcon 3/28
 	Evaulate expression
 	Modified 3/30: (Kenton) changed to match new variables
 	and reset the memory and display fields  
 	*/
-
 	this.evaluateExpression = function(){
-
 		// Take the values from the expression stack
 		var num2 = parseFloat(this.expression.shift());
 		var op = this.expression.shift();
@@ -101,7 +97,7 @@ var Calculator = function() {
 		this.updateMemory(this.memoryValue);
 		this.updateDisplay(this.currentInput);
 
-		// Store the result in expression in case the user wants to use this valuae
+		// Store the result in expression in case the user wants to use this value
 		this.expression=[this.result];
 	}
 };
@@ -243,7 +239,6 @@ var addListeners = function(calc) {
 		var ops = ["+", "-", "*", "/"];
 		// If the current input is not an operation
 		if (!calc.opMode) {
-			
 			if (calc.expression.length == 0) {
 				//add the number to the expression stack
 				calc.expression.unshift(calc.currentInput);
@@ -339,8 +334,14 @@ var addListeners = function(calc) {
 	var mr =  calc.buttons.mr;	
 	var mrFuc = function(){
 		// if there is non zero value, then display it
-		if(calc.memoryResult[0] != 0) {
-			calc.updateMemory(calc.memoryResult[0]);			
+		if(calc.memoryResult[0] != 0) {	
+			calc.memoryValue += calc.memoryResult[0];
+			calc.updateMemory(calc.memoryValue + " ");
+			calc.currentInput = " ";
+			calc.updateDisplay(calc.currentInput);
+			// Store the result in expression
+			calc.expression=[calc.memoryValue];
+			calc.opMode = false;
 		}
 	}
 	mr.addEventListener("click", mrFuc, false);
