@@ -11,21 +11,16 @@ var Calculator = function() {
 
 	this.buttons = document.getElementById("mainbuttons");
 
-	this.displayValue = "";
-	this.currentNumber = "";
-	this.ops = [];
-	this.numbers =[];
-	this.evalExpression = 0;
-	this.lastOpEquals = false;
-
-
-
-
+	this.currentInput = "";
+	this.memoryValue = "";
+	this.expression=[];
+	this.result = 0;
+	this.opMode = false;
 	/*
 	Author: Sunny Patel 3/26
 	Replaces the textfield in the display with input str.
 	*/
-	this.updateCalcDisplay = function(str) {
+	this.updateDisplay = function(str) {
 		this.display.value = str;
 	}
 
@@ -40,71 +35,68 @@ var Calculator = function() {
 
 	/*
 	Author: Sunny Patel & Jenn Alarcon 3/26
-	Clears the display and reset the displayValue
-	this.display.value = "";
-	this.displayValue = "";
-	this.display.memory = "";
-
+	Clears the displays and reset the currentInput
 	*/
-
 	this.clear = function() {
-		this.updateCalcDisplay("");
+		this.updateDisplay("");
 		this.updateMemory("");
-
-		this.displayValue = "";
-		this.evalExpression = "";
-		this.currentNumber = "";
-
-		this.ops = [];
-		this.numbers =[];
-
-		this.lastOpEquals = false;
-
-
+		this.currentInput = "";
+		this.result = 0;
+		this.memoryValue = "";
+		this.expression=[];
+		this.opMode = false;
 	}
 
 	/*
 	Author: Sunny Patel 3/26
 	Updates the expression value based off the input digit
-	this.displayValue = #this.expresssionValue*10 + digit
+	this.currentInput = #this.expresssionValue*10 + digit
 
 	Modified: Jenn Alarcon 3/26
-	Wasn't adding digits right when multiplying by ten. -Minor Change, to just add digit to end of string
+	Wasn't adding digits right when multiplying by ten. 
+	-Minor Change, to just add digit to end of string
 
 	Modified: Jenn Alarcon 3/28
 	Added the current number field
 	*/
-	this.updatedisplayValue = function(digit) {
-		this.displayValue += digit;
-		this.currentNumber += digit;
+	this.updateCurrentInput = function(digit) {
+		this.currentInput += digit;
 	}
 
 	/*
 	Author: Jenn Alarcon 3/28
 	Evaulate expression
+	Modified 3/30: (Kenton) changed to match new variables
+	and reset the memory and display fields  
 	*/
 
 	this.evaluateExpression = function(){
 
-		var op = this.ops.pop();
+		// Take the values from the expression stack
+		var num2 = parseFloat(this.expression.shift());
+		var op = this.expression.shift();
+		var num1 = parseFloat(this.expression.shift());
 
-		var num2 = parseFloat(this.numbers.shift());
-		var num1 = parseFloat(this.numbers.shift());
-
+		//Perform the specified operation
 		if(op == "+"){
-			this.evalExpression = num1 + num2;
+			this.result = num1 + num2;
 		}else if(op == "*"){
-			this.evalExpression = num1 * num2;
+			this.result = num1 * num2;
 		}else if(op == "/"){
-			this.evalExpression = num1 / num2;
+			this.result = num1 / num2;
 		}else if(op == "-"){
-			this.evalExpression = num1 - num2;
+			this.result = num1 - num2;
 		}
 
-		this.displayValue = this.evalExpression;
-		//add new value to memory (i.e. the number stack)
-		this.numbers.unshift(this.evalExpression);
-		this.evalExpression = 0;
+		// Update the current input and memory fields
+		this.currentInput = " ";
+		this.memoryValue = this.result + " ";
+		this.updateMemory(this.memoryValue);
+		this.updateDisplay(this.currentInput);
+
+		// Store the result in expression in case the user wants to use this valuae
+		this.expression=[this.result];
+
 	}
 
 };
@@ -114,66 +106,84 @@ Author: Sunny Patel & Jenn Alarcon & Raphael Huang & Kenton Steiner 3/26
 Adds event listeners to calc's buttons.
 */
 var addListeners = function(calc) {
-	/*
-	add event listener for the decimal point
+	/* Add event listener for the decimal point
 	Modified 3/29: Kenton Steiner
 	Removed the checkDot value and used indexOf to determine if the decimal
 	point was already present in the current value.
 	*/
 	var dot = calc.buttons.dot;
 	var dotFunc = function() {
-		if (calc.displayValue.indexOf('.') == -1) {
-					calc.displayValue += this.value;
-					calc.updateCalcDisplay(calc.displayValue);
+		// If a decimal point has not been used yet, update the value
+		if (calc.currentInput.indexOf('.') == -1) {
+			calc.currentInput += this.value;
+			calc.updateDisplay(calc.currentInput);
 		}
-	}
-		
-		dot.addEventListener("click", dotFunc, false);
+	}		
+	dot.addEventListener("click", dotFunc, false);
 	
 	
-		/*
-		add event listener for = button
+	/* Add event listener for = button
+	Modified: 3/30 Kenton - Added if statements for different calculator
+	states 
+	*/
+	var equals = calc.buttons.equal;
+	var equalsFunc = function() {
+		//Add the current number to the expression stack
+		calc.expression.unshift(calc.currentInput);
+		/* If only a number has been input thus far,
+			simply transfer the number to the memory field
 		*/
-		var equals = calc.buttons.equal;
-		var equalsFunc = function() {
-			//add to numbers stack
-			calc.numbers.unshift(calc.currentNumber);
-			calc.displayValue += " ";
-	
-			if(calc.numbers.length == 2){
-				//window.alert(calc.ops.length);
-				calc.evaluateExpression();
-				//user need to enter a number
-				calc.displayValue += " ";
-	
-			}
-			calc.updateMemory(calc.displayValue);
-			calc.updateCalcDisplay("");
-			calc.lastOpEquals = true;
-	
+		if (calc.expression.length == 1) {
+			calc.memoryValue = calc.currentInput;
+			calc.updateMemory(calc.memoryValue);
+			calc.updateDisplay("");
+
+		}else if(calc.expression.length == 3){
+			calc.evaluateExpression();
 		}
-		equals.addEventListener("click", equalsFunc, false);
+	
+	} 
+	equals.addEventListener("click", equalsFunc, false);
 	
 	
-		/*
-		add event listener for CLEAR button
+		/* Add event listener for CLEAR button
+		Modified: Kenton (3/30) - Minor Change - removed checkDot variable
 		*/
-		// prevent there are more than one dots for one number
-		var clear = calc.buttons.clear;
-	
+		var clear = calc.buttons.clear;	
 		var clearFunc = function() {
 			calc.clear();
 		}
 		clear.addEventListener("click", clearFunc, false);
 	
 	
-		/*
-		add event listener for each NUMBER button
+		/* Add event listener for each NUMBER button
+		Modifications: 3/30 Kenton
+		Included if statements for various states the calculator could be
+		in when a number is pressed
 		*/
 		var numberFunc = function() {
-			
-			calc.updatedisplayValue(this.value);
-			calc.updateCalcDisplay(calc.displayValue);
+			/* If there is a result on the expression stack, clear the
+				stack, the memory value, and the memory field
+			*/
+			if (calc.expression.length == 1) {
+				calc.memoryValue = "";
+				calc.updateMemory(calc.memoryValue);
+				calc.expression = [];
+			} /*  If there are two values in the stack, move the operation
+					from the Display to the Memory, and clear Display
+				*/
+			else if (calc.expression.length == 2 && opMode) {
+				calc.memoryValue += calc.currentInput + " ";
+				calc.updateMemory(calc.memoryValue);
+				calc.currentInput = "";
+			}
+			// Update the currentInput with the number given
+			calc.updateCurrentInput(this.value);
+			calc.updateDisplay(calc.currentInput);
+
+			// Set opMode to false so the function won't keep updating 
+			// memory after an operation has been entered
+			opMode = false;
 		}
 		// retrieve all the elements with the name numbers. This is
 		// expected to be all the form elements that are numbers.
@@ -187,63 +197,64 @@ var addListeners = function(calc) {
 		var opsFunc = function(){
 	
 			// check whether there is just one OPS between two numbers, overwrite the first OPS
-			var check = true;
-	
+			var check = true;	
 			var ops = ["+", "-", "*", "/"];
 			for (var i =0; i < ops.length && check; i++){
-				if(calc.displayValue.length > 0 && calc.displayValue.charAt(calc.displayValue.length - 1) == ops[i]){
-					calc.displayValue = calc.displayValue.substring(0, calc.displayValue.length - 1);
+				if(calc.currentInput.length > 0 && calc.currentInput.charAt(calc.currentInput.length - 1) == ops[i]){
+					calc.currentInput = calc.currentInput.substring(0, calc.currentInput.length - 1);
 				}
 			}
 	
 			// at the beginning, the OPS just can be "-",
-			if(calc.displayValue.length == 0 && this.value != "-"){
+			if(calc.currentInput.length == 0 && this.value != "-"){
 				check = false;
 			}
-	
-	
-			//***Author: Jenn ****
-			//***UPDATE DISPLAY****/
+		
+			/* Author: Jenn 3/28
+			Modified: Kenton 3/30 - Rewrote the function to have the calculator
+			display the values in a different format than previously
+			*/
 			if (check){
-	
-	
-				//add to numbers stack
-				calc.numbers.unshift(calc.currentNumber);
-				//clear current number
-				calc.currentNumber ="";
-				//add space after to display space betweeen current and next num
-				calc.displayValue += " ";
-	
-				//push op onto the stack
-				calc.ops.unshift(this.value);
-	
-				//if there is two values on the stack
-				if(calc.numbers.length == 2){
-					//window.alert(calc.ops.length);
-					calc.evaluateExpression();
-					//user need to enter a number
-					calc.displayValue += " ";
-	
+				if (calc.expression.length == 0) {
+				//add the number to the expression stack
+				calc.expression.unshift(calc.currentInput);
+				
+				// Update the string in the memory, clear current display
+				calc.memoryValue = calc.currentInput + " ";
+				calc.updateMemory(calc.memoryValue)
+				} else if (calc.expression.length == 2) {
+					calc.expression.unshift(calc.currentInput);
 				}
-				//update memory with the op chosen next
-				calc.updateMemory(this.value);
-				calc.updateCalcDisplay(calc.displayValue);
+				/* If there are three values on the stack
+					1. Evaluate the expression
+					2. Display the result in the memory field
+					3. Clear the expression stack and push the result as the first value
+					4. Display the operation selected to perform on 
+						the result of the previous expression
+				*/
+				if(calc.expression.length == 3) {					
+					// Call evaluate to perform steps 1 through 3
+					calc.evaluateExpression();	
+				}
+				opMode = true;
+				
+				//Push the operation onto the expression stack
+				calc.expression.unshift(this.value);
+				
+				//Update the current input Display and currentInput
+				calc.currentInput = this.value + " ";
+				calc.updateDisplay(calc.currentInput);
 			}
 	
 	} //END OF OPS FUNCTION
 
+	/* Author: Jenn  3/28
+	Modified: Kenton (3/30) 
+	Made the addEventListener all one line
+	*/
 	for (var i=0; i < calc.buttons.ops.length; i++) {
 		calc.buttons.ops[i].addEventListener("click", opsFunc, false);
 	}
-	//***Author: Jenn ****
-
-
-
 }
-
-
-
-
-
 var calc = new Calculator();
 addListeners(calc);
