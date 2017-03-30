@@ -10,7 +10,11 @@
 ### Contributions
 ###### Sunny Patel
 ###### Kenton Steiner
-Reprogrammed the evalutation of expressions to make it cleaner.  Various bug fixing involving the order that operations and numbers are input into the calculator.  Pair programmed the CSS styling of the Calculator in the web browser with Sunny.  
+- Reprogrammed the evalutation of expressions to make it cleaner.  
+- Various bug fixing involving the order that operations and numbers are input into the calculator.  
+- Pair programmed the CSS styling of the Calculator in the web browser with Sunny.  
+- Wrote the Javascript for the history feature
+- Added a backspace (DEL) button functionality
 ###### Tony Su
 ###### Raphael Huang
 ###### Jenn Alarcon
