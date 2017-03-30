@@ -103,9 +103,7 @@ var Calculator = function() {
 
 		// Store the result in expression in case the user wants to use this valuae
 		this.expression=[this.result];
-
 	}
-
 };
 
 
@@ -182,9 +180,7 @@ var addListeners = function(calc) {
 		// Display error if the memory value is NaN
 		if (isNaN(calc.memoryValue)){
 			calc.updateMemory("Error");
-		}
-
-	
+		}	
 	} 
 	equals.addEventListener("click", equalsFunc, false);
 	
@@ -243,8 +239,7 @@ var addListeners = function(calc) {
 	Added a check for if the previous event was selecting an operation
 	and if it was, the new symbol replaces the old one
 	*/
-	var opsFunc = function(){
-				
+	var opsFunc = function(){			
 		var ops = ["+", "-", "*", "/"];
 		// If the current input is not an operation
 		if (!calc.opMode) {
@@ -286,11 +281,8 @@ var addListeners = function(calc) {
 				calc.updateDisplay(calc.currentInput);
 				calc.expression.shift();
 				calc.expression.unshift(this.value);
-			}
-			
-	
+			}	
 	} //END OF OPS FUNCTION
-
 
 	/* Author: Jenn  3/28
 	Modified: Kenton (3/30) 
