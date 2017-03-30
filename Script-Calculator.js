@@ -106,6 +106,17 @@ Author: Sunny Patel & Jenn Alarcon & Raphael Huang & Kenton Steiner 3/26
 Adds event listeners to calc's buttons.
 */
 var addListeners = function(calc) {
+
+	/* Add event listener for the backspace button
+	Author: Kenton Steiner 3/30
+	*/
+	var backspace = calc.buttons.backspace;
+	var backFunc = function() {
+		calc.currentInput = calc.currentInput.substring(0,calc.currentInput.length-1);
+		calc.updateDisplay(calc.currentInput);
+	}
+	backspace.addEventListener("click", backFunc, false);
+	
 	/* Add event listener for the decimal point
 	Modified 3/29: Kenton Steiner
 	Removed the checkDot value and used indexOf to determine if the decimal
