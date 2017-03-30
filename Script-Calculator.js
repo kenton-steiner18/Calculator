@@ -119,6 +119,7 @@ var Calculator = function() {
 
 };
 
+
 /*
 Author: Sunny Patel & Jenn Alarcon & Raphael Huang & Kenton Steiner 3/26
 Adds event listeners to calc's buttons.
@@ -134,6 +135,7 @@ var addListeners = function(calc) {
 		calc.updateDisplay(calc.currentInput);
 	}
 	backspace.addEventListener("click", backFunc, false);
+
 
 	/* Add event listener for the decimal point
 	Modified 3/29: Kenton Steiner
@@ -177,6 +179,7 @@ var addListeners = function(calc) {
 	/* Add event listener for = button
 	Modified: 3/30 Kenton - Added if statements for different calculator
 	states 
+	Modified: 3/30 Raphael - Added the display error
 	*/
 	var equals = calc.buttons.equal;
 	var equalsFunc = function() {
@@ -203,72 +206,81 @@ var addListeners = function(calc) {
 		calc.updateHistory(calc.result);
 		calc.updateHistory("\n");*/
 		}
+
+		// Display error if the memory value is NaN
+		if (isNaN(calc.memoryValue)){
+			calc.updateMemory("Error");
+		}
+
 	
 	} 
 	equals.addEventListener("click", equalsFunc, false);
 	
 	
-		/* Add event listener for CLEAR button
-		Modified: Kenton (3/30) - Minor Change - removed checkDot variable
-		*/
-		var clear = calc.buttons.clear;	
-		var clearFunc = function() {
-			calc.clear();
-		}
-		clear.addEventListener("click", clearFunc, false);
-	
-	
-		/* Add event listener for each NUMBER button
-		Modifications: 3/30 Kenton
-		Included if statements for various states the calculator could be
-		in when a number is pressed
-		*/
-		var numberFunc = function() {
-			/* If there is a result on the expression stack, clear the
-				stack, the memory value, and the memory field
-			*/
-			if (calc.expression.length == 1) {
-				calc.memoryValue = "";
-				calc.updateMemory(calc.memoryValue);
-				calc.expression = [];
-			} /*  If there are two values in the stack, move the operation
-					from the Display to the Memory, and clear Display
-				*/
-			else if (calc.expression.length == 2 && calc.opMode) {
-				calc.memoryValue += calc.currentInput;
-				calc.updateMemory(calc.memoryValue);
-				// Uncomment when HTML history element has been created
-				// calc.updateHistoryValue(" ");
-				// calc.updateHistoryValue(calc.currentInput);
-				calc.currentInput = "";
-			}
-			// Update the currentInput with the number given
-			calc.updateCurrentInput(this.value);
-			calc.updateDisplay(calc.currentInput);
+	/* Add event listener for CLEAR button
+	Modified: Kenton (3/30) - Minor Change - removed checkDot variable
+	*/
+	var clear = calc.buttons.clear;	
+	var clearFunc = function() {
+		calc.clear();
+	}
+	clear.addEventListener("click", clearFunc, false);
 
-			// Set opMode to false so the function won't keep updating 
-			// memory after an operation has been entered
-			calc.opMode = false;
-		}
-		// retrieve all the elements with the name numbers. This is
-		// expected to be all the form elements that are numbers.
-		for (var i=0; i < calc.buttons.numbers.length; i++) {
-			calc.buttons.numbers[i].addEventListener("click", numberFunc, false);
-		}
 	
-		/* Author: Jenn 3/28
-			Modified: Kenton 3/30 - Rewrote the function to have the calculator
-			display the values in a different format than previously.
-			Added a check for if the previous event was selecting an operation
-			and if it was, the new symbol replaces the old one
-			*/
-		var opsFunc = function(){
+	/* Add event listener for each NUMBER button
+	Modifications: 3/30 Kenton
+	Included if statements for various states the calculator could be
+	in when a number is pressed
+	*/
+	var numberFunc = function() {
+		/* If there is a result on the expression stack, clear the
+			stack, the memory value, and the memory field
+		*/
+		if (calc.expression.length == 1) {
+			calc.memoryValue = "";
+			calc.updateMemory(calc.memoryValue);
+			calc.expression = [];
+		} 
+		/*  If there are two values in the stack, move the operation
+			from the Display to the Memory, and clear Display
+		*/
+		else if (calc.expression.length == 2 && calc.opMode) {
+			calc.memoryValue += calc.currentInput;
+			calc.updateMemory(calc.memoryValue);
+			// Uncomment when HTML history element has been created
+			// calc.updateHistoryValue(" ");
+			// calc.updateHistoryValue(calc.currentInput);
+			calc.currentInput = "";
+		}
+
+		// Update the currentInput with the number given
+		calc.updateCurrentInput(this.value);
+		calc.updateDisplay(calc.currentInput);
+
+		// Set opMode to false so the function won't keep updating 
+		// memory after an operation has been entered
+		calc.opMode = false;
+	}
+	// retrieve all the elements with the name numbers. This is
+	// expected to be all the form elements that are numbers.
+	for (var i=0; i < calc.buttons.numbers.length; i++) {
+		calc.buttons.numbers[i].addEventListener("click", numberFunc, false);
+	}
+
+	
+	/* Author: Jenn 3/28
+	Modified: Kenton 3/30 - Rewrote the function to have the calculator
+	display the values in a different format than previously.
+	Added a check for if the previous event was selecting an operation
+	and if it was, the new symbol replaces the old one
+	*/
+	var opsFunc = function(){
 				
-			var ops = ["+", "-", "*", "/"];
-			// If the current input is not an operation
-			if (!calc.opMode) {
+		var ops = ["+", "-", "*", "/"];
+		// If the current input is not an operation
+		if (!calc.opMode) {
 			
-				if (calc.expression.length == 0) {
+			if (calc.expression.length == 0) {
 				//add the number to the expression stack
 				calc.expression.unshift(calc.currentInput);
 				
@@ -284,13 +296,14 @@ var addListeners = function(calc) {
 					//Uncomment when HTML History element has been created
 					//calc.updateHistoryValue(calc.currentInput);
 				}
-				/* If there are three values on the stack
-					1. Evaluate the expression
-					2. Display the result in the memory field
-					3. Clear the expression stack and push the result as the first value
-					4. Display the operation selected to perform on 
-						the result of the previous expression
-				*/
+
+			/* If there are three values on the stack
+				1. Evaluate the expression
+				2. Display the result in the memory field
+				3. Clear the expression stack and push the result as the first value
+				4. Display the operation selected to perform on 
+					the result of the previous expression
+			*/
 				if(calc.expression.length == 3) {					
 					// Call evaluate to perform steps 1 through 3
 					calc.evaluateExpression();	
@@ -314,6 +327,7 @@ var addListeners = function(calc) {
 			
 	
 	} //END OF OPS FUNCTION
+
 
 	/* Author: Jenn  3/28
 	Modified: Kenton (3/30) 
