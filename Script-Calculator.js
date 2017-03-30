@@ -2,6 +2,8 @@
 Author: Sunny Patel 3/26
 Modified: Jenn Alarcon 3/26
 Chaged Expression inttial value
+Modified: Raphael Huang 3/30
+Added memeory function
 */
 
 var Calculator = function() {
@@ -15,10 +17,11 @@ var Calculator = function() {
 
 	this.currentInput = "";
 	this.memoryValue = "";
-	this.historyValue = "";
+	this.memoryResult = [0];
 	this.expression=[];
 	this.result = 0;
 	this.opMode = true;
+
 	/*
 	Author: Sunny Patel 3/26
 	Replaces the textfield in the display with input str.
@@ -27,13 +30,6 @@ var Calculator = function() {
 		this.display.value = str;
 	}
 
-	/*
-	Author: Kenton Steiner 3/30
-	Adds the input str to the History field
-	*/
-	this.updateHistory = function(str) {
-		this.history.value += str;
-	}
 	/*
 	Author: Jenn Alarcon 3/28
 	Replaces the textfield in the memory field with input str.
@@ -53,7 +49,6 @@ var Calculator = function() {
 		this.currentInput = "";
 		this.result = 0;
 		this.memoryValue = "";
-		this.historyValue = "";
 		this.expression=[];
 		this.opMode = true;
 	}
@@ -74,12 +69,6 @@ var Calculator = function() {
 		this.currentInput += digit;
 	}
 
-	/* Author: Kenton Steiner 3/30
-	Updates the value of the history string
-	*/ 
-	this.updateHistoryValue = function(digit) {
-		this.historyValue += digit;
-	}
 
 	/*
 	Author: Jenn Alarcon 3/28
@@ -148,20 +137,13 @@ var addListeners = function(calc) {
 	var dot = calc.buttons.dot;
 	var dotFunc = function() {
 		/* If a decimal point is entered first, update the display with a 
-			zero in front of the decimal point
+		zero in front of the decimal point
 		*/
 		if (calc.opMode) {
 			// Move the operation to memory and the history
 			calc.memoryValue += calc.currentInput;
 			calc.updateMemory(calc.memoryValue);
-			
-
-			// Uncomment when HTML history element is created
-			//calc.updateHistoryValue(calc.currentInput);
-
-
-
-
+	
 			// Update the display with the decimal value
 			calc.currentInput = "0";
 			calc.updateDisplay(calc.currentInput);
@@ -186,25 +168,15 @@ var addListeners = function(calc) {
 		//Add the current number to the expression stack
 		calc.expression.unshift(calc.currentInput);
 		/* If only a number has been input thus far,
-			simply transfer the number to the memory field
+		simply transfer the number to the memory field
 		*/
 		if (calc.expression.length == 1) {
 			calc.memoryValue = calc.currentInput;
 			calc.updateMemory(calc.memoryValue);
 			calc.updateDisplay("");
-			// Uncomment when HTML History element is created
-			// calc.updateHistory(calc.currentInput);
-
-		}else if(calc.expression.length == 3){
-			// Uncomment when HTML history element is created
-			// calc.updateHistoryValue("=");
+		}
+		else if(calc.expression.length == 3){
 			calc.evaluateExpression();
-			/* Uncomment when HTML history element is created
-		// Display the history string in the history element
-		calc.updateHistory(calc.historyValue);
-		calc.updateHistory("\n");
-		calc.updateHistory(calc.result);
-		calc.updateHistory("\n");*/
 		}
 
 		// Display error if the memory value is NaN
@@ -234,7 +206,7 @@ var addListeners = function(calc) {
 	*/
 	var numberFunc = function() {
 		/* If there is a result on the expression stack, clear the
-			stack, the memory value, and the memory field
+		stack, the memory value, and the memory field
 		*/
 		if (calc.expression.length == 1) {
 			calc.memoryValue = "";
@@ -242,14 +214,11 @@ var addListeners = function(calc) {
 			calc.expression = [];
 		} 
 		/*  If there are two values in the stack, move the operation
-			from the Display to the Memory, and clear Display
+		from the Display to the Memory, and clear Display
 		*/
 		else if (calc.expression.length == 2 && calc.opMode) {
 			calc.memoryValue += calc.currentInput;
 			calc.updateMemory(calc.memoryValue);
-			// Uncomment when HTML history element has been created
-			// calc.updateHistoryValue(" ");
-			// calc.updateHistoryValue(calc.currentInput);
 			calc.currentInput = "";
 		}
 
@@ -287,14 +256,8 @@ var addListeners = function(calc) {
 				// Update the string in the memory, clear current display
 				calc.memoryValue = calc.currentInput + " ";
 				calc.updateMemory(calc.memoryValue);
-				//Uncomment when HTML History element has been created
-				//calc.updateHistoryValue(" ");
-				//calc.updateHistoryValue(calc.currentInput);
 				} else if (calc.expression.length == 2) {
 					calc.expression.unshift(calc.currentInput);
-
-					//Uncomment when HTML History element has been created
-					//calc.updateHistoryValue(calc.currentInput);
 				}
 
 			/* If there are three values on the stack
@@ -336,6 +299,74 @@ var addListeners = function(calc) {
 	for (var i=0; i < calc.buttons.ops.length; i++) {
 		calc.buttons.ops[i].addEventListener("click", opsFunc, false);
 	}
+
+
+	/* Author: Raphael 3/30
+	 Add Event Listener for M+ button
+	 */
+	var ma =  calc.buttons.madd;	
+	var maddFuc = function(){
+		var ops = ["+", "-", "*", "/"];
+		// check if there is a input number in display, then add it to memory result
+		if (calc.currentInput.length > 0 && ops.indexOf(calc.currentInput) == -1 && calc.currentInput != " "){
+			calc.memoryResult[0] += parseInt(calc.currentInput);
+		}
+		// if there is no input number in display, then add the memory value
+		else{
+			calc.memoryResult[0] += parseInt(calc.memoryValue);
+		}
+		// clean the calculater
+		calc.clear();
+	}
+	ma.addEventListener("click", maddFuc, false);
+
+
+	/* Author: Raphael 3/30
+	 Add Event Listener for M- button
+	 */
+	var mm =  calc.buttons.mminus;	
+	var mminusFuc = function(){
+		var ops = ["+", "-", "*", "/"];
+		// check if there is a input number in display, then minus it to memory result
+		if (calc.currentInput.length > 0 && ops.indexOf(calc.currentInput) == -1 && calc.currentInput != " "){
+			calc.memoryResult[0] -= parseInt(calc.currentInput);
+		}
+		// if there is no input number in display, then minus the memory value
+		else{
+			calc.memoryResult[0] -= parseInt(calc.memoryValue);
+		}
+		// clean the calculater
+		calc.clear();
+	}
+	mm.addEventListener("click", mminusFuc, false);
+
+
+	/* Author: Raphael 3/30
+	 Add Event Listener for MR button
+	 */
+	var mr =  calc.buttons.mr;	
+	var mrFuc = function(){
+		// if there is non zero value, then display it
+		if(calc.memoryResult[0] != 0) {
+			calc.updateMemory(calc.memoryResult[0]);			
+		}
+	}
+	mr.addEventListener("click", mrFuc, false);
+	
+	/* Author: Raphael 3/30
+	 Add Event Listener for MC button
+	 */
+	var mc =  calc.buttons.mc;	
+	var mcFuc = function(){
+		// clean the memory
+		if(calc.memoryResult[0] != 0) {
+			calc.memoryResult[0] = 0;
+			// clean the calculater
+			calc.clear();
+		}
+	}
+	mc.addEventListener("click", mcFuc, false);
 }
+
 var calc = new Calculator();
 addListeners(calc);
