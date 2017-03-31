@@ -13,11 +13,11 @@ In order to run the javascript calculator, just need open the Calculator.html. T
 
 ### Contributions
 ###### Sunny Patel
-- Created the Calculater function, which using the DOM and event
-- Programming the addListeners function, made the calculator basic functions can work.
-- Worked on HTML set up for calculator
-- Fixed the CSS Styling bug
-- Added more css stylings
+- Initialized the Calculater function with basic button and display functionality using event handlers
+- Initialized the addListeners function with the functionality mentioned above
+- Modfied Jenn's HTML setup to work as intended with our Javascript functions
+- CSS Styling
+- Fixed bug so that text wasn't cut off. Now overflow increases the size of the text box temporarily
 ###### Kenton Steiner
 - Reprogrammed the evalutation of expressions to make it cleaner.  
 - Various bug fixing involving the order that operations and numbers are input into the calculator.  
