@@ -24,6 +24,10 @@ In order to run the javascript calculator, just need open the Calculator.html. T
 - Pair programmed the CSS styling of the Calculator in the web browser with Sunny.  
 - Added a backspace (DEL) button functionality
 ###### Tony Su
+- Fixed some bugs in the memory feature.
+- Updated evaluateExpression to deal with the divided by zero case.
+- Added precentage feature, with cooresponding buttons.
+- writing the testing plan.
 ###### Raphael Huang
 - Wrote some part of the addListeners function  
 - Added the memorya memory feature, with corresponding buttons.
