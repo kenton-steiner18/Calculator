@@ -85,9 +85,11 @@ var Calculator = function() {
 			this.result = num1 + num2;
 		}else if(op == "*"){
 			this.result = num1 * num2;
-		}else if(op == "/"){
+		}else if(op == "/" && num2 != 0){
 			this.result = num1 / num2;
-		}else if(op == "-"){
+		}else if(op == "/" && num2 == 0){
+			this.result = "Error";
+		} else if(op == "-"){
 			this.result = num1 - num2;
 		}
 
@@ -246,8 +248,9 @@ var addListeners = function(calc) {
 				// Update the string in the memory, clear current display
 				calc.memoryValue = calc.currentInput + " ";
 				calc.updateMemory(calc.memoryValue);
-				} else if (calc.expression.length == 2) {
-					calc.expression.unshift(calc.currentInput);
+				}
+			else if (calc.expression.length == 2) {
+				calc.expression.unshift(calc.currentInput);
 				}
 
 			/* If there are three values on the stack
@@ -257,26 +260,26 @@ var addListeners = function(calc) {
 				4. Display the operation selected to perform on 
 					the result of the previous expression
 			*/
-				if(calc.expression.length == 3) {					
-					// Call evaluate to perform steps 1 through 3
-					calc.evaluateExpression();	
+			if(calc.expression.length == 3) {
+				// Call evaluate to perform steps 1 through 3
+				calc.evaluateExpression();
 				}
-				calc.opMode = true;
+			calc.opMode = true;
 				
-				//Push the operation onto the expression stack
-				calc.expression.unshift(this.value);
+			//Push the operation onto the expression stack
+			calc.expression.unshift(this.value);
 				
-				//Update the current input Display and currentInput
-				calc.currentInput = this.value;
-				calc.updateDisplay(calc.currentInput);
+			//Update the current input Display and currentInput
+			calc.currentInput = this.value;
+			calc.updateDisplay(calc.currentInput);
 			} //If the current input is an operation
-			else {
-				// Switch the op value in the expression stack and display
-				calc.currentInput = this.value;
-				calc.updateDisplay(calc.currentInput);
-				calc.expression.shift();
-				calc.expression.unshift(this.value);
-			}	
+		else {
+			// Switch the op value in the expression stack and display
+			calc.currentInput = this.value;
+			calc.updateDisplay(calc.currentInput);
+			calc.expression.shift();
+			calc.expression.unshift(this.value);
+		}
 	} //END OF OPS FUNCTION
 
 	/* Author: Jenn  3/28
@@ -290,17 +293,19 @@ var addListeners = function(calc) {
 
 	/* Author: Raphael 3/30
 	 Add Event Listener for M+ button
+	 Modified: Tony Su 3/30
+	 	M+ can calucate the decimal number now.
 	 */
 	var ma =  calc.buttons.madd;	
 	var maddFuc = function(){
 		var ops = ["+", "-", "*", "/"];
 		// check if there is a input number in display, then add it to memory result
 		if (calc.currentInput.length > 0 && ops.indexOf(calc.currentInput) == -1 && calc.currentInput != " "){
-			calc.memoryResult[0] += parseInt(calc.currentInput);
+			calc.memoryResult[0] += parseFloat(calc.currentInput);
 		}
 		// if there is no input number in display, then add the memory value
 		else{
-			calc.memoryResult[0] += parseInt(calc.memoryValue);
+			calc.memoryResult[0] += parseFloat(calc.memoryValue);
 		}
 		// clean the calculater
 		calc.clear();
@@ -310,17 +315,19 @@ var addListeners = function(calc) {
 
 	/* Author: Raphael 3/30
 	 Add Event Listener for M- button
+	 Modified: Tony Su 3/30
+	 	M-i can calucate the decimal number now.
 	 */
 	var mm =  calc.buttons.mminus;	
 	var mminusFuc = function(){
 		var ops = ["+", "-", "*", "/"];
 		// check if there is a input number in display, then minus it to memory result
 		if (calc.currentInput.length > 0 && ops.indexOf(calc.currentInput) == -1 && calc.currentInput != " "){
-			calc.memoryResult[0] -= parseInt(calc.currentInput);
+			calc.memoryResult[0] -= parseFloat(calc.currentInput);
 		}
 		// if there is no input number in display, then minus the memory value
 		else{
-			calc.memoryResult[0] -= parseInt(calc.memoryValue);
+			calc.memoryResult[0] -= parseFloat(calc.memoryValue);
 		}
 		// clean the calculater
 		calc.clear();
@@ -330,11 +337,14 @@ var addListeners = function(calc) {
 
 	/* Author: Raphael 3/30
 	 Add Event Listener for MR button
+	 Modified: Tony Su 3/30
+	 	fix the bug that append the MR value onto the memory result.
 	 */
 	var mr =  calc.buttons.mr;	
 	var mrFuc = function(){
 		// if there is non zero value, then display it
-		if(calc.memoryResult[0] != 0) {	
+		if(calc.memoryResult[0] != 0) {
+			calc.memoryValue = " ";
 			calc.memoryValue += calc.memoryResult[0];
 			calc.updateMemory(calc.memoryValue + " ");
 			calc.currentInput = " ";
