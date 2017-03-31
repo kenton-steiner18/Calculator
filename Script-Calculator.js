@@ -72,7 +72,9 @@ var Calculator = function() {
 	Author: Jenn Alarcon 3/28
 	Evaulate expression
 	Modified 3/30: (Kenton) changed to match new variables
-	and reset the memory and display fields  
+	and reset the memory and display fields
+	Modified: Tony Su 3/30
+		fixed the issue with divided by zero.
 	*/
 	this.evaluateExpression = function(){
 		// Take the values from the expression stack
@@ -290,6 +292,34 @@ var addListeners = function(calc) {
 		calc.buttons.ops[i].addEventListener("click", opsFunc, false);
 	}
 
+	/* Author: Tony Su 3/30
+	Add Event Listener for % button
+	*/
+	var percent = calc.buttons.percentage;
+    var ops = ["+", "-", "*", "/"];
+	var percentFuc = function(){
+		if (calc.currentInput != " "){
+			if(ops.indexOf(calc.currentInput) == -1){
+				var result = parseFloat(calc.currentInput);
+				result /=100;
+				calc.currentInput = String(result);
+				calc.updateDisplay(calc.currentInput);
+			}
+			else if(calc.memoryValue.length != " "){
+                var result = parseFloat(calc.memoryValue);
+                result /= 100;
+                calc.memoryValue = String(result);
+                calc.updateMemory(calc.memoryValue);
+            }
+		}
+		else if(calc.memoryValue.length != " "){
+			var result = parseFloat(calc.memoryValue);
+			result /= 100;
+			calc.memoryValue = String(result);
+			calc.updateMemory(calc.memoryValue);
+		}
+	}
+	percent.addEventListener("click",percentFuc,false);
 
 	/* Author: Raphael 3/30
 	 Add Event Listener for M+ button

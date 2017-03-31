@@ -39,6 +39,6 @@ body{
 }
 /*Greater specificity than those for the common buttons*/
 #mainbuttons #clear {
-	width: 6em;
+	width: 5.5em;
 	margin-bottom: .5em;
 }
