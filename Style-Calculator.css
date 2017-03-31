@@ -1,4 +1,7 @@
-/*Jenn Alarcon - Created 3.26 (Just started with basic coloring, and center*/
+/*Jenn Alarcon
+	Created 3/26: Just started with basic coloring, and center */
+/*Sunny Patel & Kenton Steiner
+	Modified 3/28: Changed background, and overhauled calculator design */
 body{
 	background-image: url("ep_naturalblack.png");
 }
@@ -35,8 +38,9 @@ body{
 	width:  16em;
 	margin: 0;
 	height: 4em;
-	
+	text-align: right;
 }
+
 /*Greater specificity than those for the common buttons*/
 #mainbuttons #clear {
 	width: 5.5em;

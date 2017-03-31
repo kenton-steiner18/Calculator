@@ -399,6 +399,33 @@ var addListeners = function(calc) {
 		}
 	}
 	mc.addEventListener("click", mcFuc, false);
+
+	/* Author: Sunny 3/30
+     Test box gets larger the more characters there are.
+    */
+    var maxWidth = 28;
+    var baseBoxWidth = 16;
+    var currentBoxWidth = baseBoxWidth;
+    var dynamicSizeFunc = function() {
+		if (calc.display.value.length > maxWidth) {	
+			/*
+			 For every character after the 27th character, increase 
+			size of box by .6 em every time the length of the textbox is 
+			larger than the previous
+			*/
+			currentBoxWidth += .6;
+			maxWidth++;
+			calc.display.style.width = currentBoxWidth + "em";
+		} else {
+		  calc.display.style.width = baseBoxWidth + "em";
+		  currentBoxWidth = baseBoxWidth;
+		  maxWidth = 28;
+		}
+	}
+	var allButtons = document.querySelectorAll("input[type=button]");
+	for (var i = 0; i < allButtons.length; i++) {
+		allButtons[i].addEventListener("click", dynamicSizeFunc, false);
+	}
 }
 
 var calc = new Calculator();
