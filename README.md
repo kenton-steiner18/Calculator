@@ -17,4 +17,13 @@
 - Added a backspace (DEL) button functionality
 ###### Tony Su
 ###### Raphael Huang
+- Wrote some part of the addListeners function  
+- Added the memorya memory feature, with corresponding buttons (e.g., MC, MR, M+, M-).
+- Fixed bugs about the only one dots in one number, just only one operation between two numbers.
+- Updated documentation and made sure the program was commented accordingly.
 ###### Jenn Alarcon
+- Worked on evaluation of expressions.
+- Wrote HTML set up for calculator. 
+- Wrote parts of the addListeners function.
+- Worked on equals and ops functions.
+
